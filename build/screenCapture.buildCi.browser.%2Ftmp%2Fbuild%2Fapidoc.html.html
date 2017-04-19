@@ -74,6 +74,12 @@
 
         <li>
 
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan"></span>kerberos</span>
+
+        </li>
+
+        <li>
+
             <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">kerberos.</span>Kerberos.prototype</span>
 
         </li>
@@ -301,6 +307,25 @@
 
     </ol></li>
 
+    <li class="apidocModuleLi"><a href="#apidoc.module.kerberos.kerberos">module kerberos.kerberos</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.kerberos.kerberos.Kerberos">
+            function <span class="apidocSignatureSpan">kerberos.kerberos.</span>Kerberos
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">kerberos.kerberos.</span>processes</span>
+
+        </li>
+
+    </ol></li>
+
     <li class="apidocModuleLi"><a href="#apidoc.module.kerberos.processes">module kerberos.processes</a><ol>
 
         <li>
@@ -395,6 +420,8 @@
 
 
 
+
+
 </div>
 
 <div class="apidocSectionDiv">
@@ -453,7 +480,24 @@
     <li>description and source-code<pre class="apidocCodePre">acquireAlternateCredentials = function (user_name, password, domain) {
   return this._native_kerberos.acquireAlternateCredentials(user_name, password, domain);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// can spoof your KDC  (see: https://github.com/qesuto/node-krb5/issues/13)
+// callback receives error and boolean
+Kerberos.prototype.authUserKrb5Password = function(username, password, service, callback) {
+    return this._native_kerberos.authUserKrb5Password(username, password, service, callback);
+};
+
+Kerberos.prototype.acquireAlternateCredentials = function(user_name, password, domain) {
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">acquireAlternateCredentials</span>(user_name, password, domain
+);
+}
+
+Kerberos.prototype.prepareOutboundPackage = function(principal, inputdata) {
+  return this._native_kerberos.prepareOutboundPackage(principal, inputdata);
+}
+
+Kerberos.prototype.decryptMessage = function(challenge) {
+...</pre></li>
     </ul>
 
 
@@ -468,7 +512,23 @@
     <li>description and source-code<pre class="apidocCodePre">authGSSClientClean = function (context, callback) {
   return this._native_kerberos.authGSSClientClean(context, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+  return this._native_kerberos.authGSSClientWrap(context, challenge, user_name, callback);
+}
+
+// free memory used by a context created using authGSSClientInit.
+// callback takes one argument, an error string if defined.
+Kerberos.prototype.authGSSClientClean = function(context, callback) {
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSClientClean</span>(context, callback);
+}
+
+// The server will obtain credentials using a keytab.  To override the
+// default location (probably /etc/krb5.keytab) set the KRB5_KTNAME
+// environment variable.
+// The service name should be in the form service, or service@host.name
+// e.g. for HTTP, use "HTTP" or "HTTP@my.host.name". See gss_import_name
+...</pre></li>
     </ul>
 
 
@@ -492,7 +552,24 @@
 
   return this._native_kerberos.authGSSClientInit(uri, flags, credentialsCache, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+    credentialsCache = '';
+  }
+
+  if (credentialsCache === undefined) {
+      credentialsCache = '';
+  }
+
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSClientInit</span>(uri, flags, credentialsCache, callback
+);
+}
+
+// This will obtain credentials using a credentials cache. To override the default
+// location (posible /tmp/krb5cc_nnnnnn, where nnnn is your numeric uid) use
+// the environment variable KRB5CNAME.
+// The credentials (suitable for using in an 'Authenticate: ' header, when prefixed
+// with 'Negotiate ') will be available as context.response inside the callback
+...</pre></li>
     </ul>
 
 
@@ -512,7 +589,23 @@
 
   return this._native_kerberos.authGSSClientStep(context, challenge, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// callback takes one argument, an error string if defined
+Kerberos.prototype.authGSSClientStep = function(context, challenge, callback) {
+if(typeof challenge == 'function') {
+  callback = challenge;
+  challenge = '';
+}
+
+return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSClientStep</span>(context, challenge, callback);
+}
+
+Kerberos.prototype.authGSSClientUnwrap = function(context, challenge, callback) {
+if(typeof challenge == 'function') {
+  callback = challenge;
+  challenge = '';
+}
+...</pre></li>
     </ul>
 
 
@@ -532,7 +625,23 @@
 
   return this._native_kerberos.authGSSClientUnwrap(context, challenge, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+Kerberos.prototype.authGSSClientUnwrap = function(context, challenge, callback) {
+if(typeof challenge == 'function') {
+  callback = challenge;
+  challenge = '';
+}
+
+return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSClientUnwrap</span>(context, challenge, callback);
+}
+
+Kerberos.prototype.authGSSClientWrap = function(context, challenge, user_name, callback) {
+if(typeof user_name == 'function') {
+  callback = user_name;
+  user_name = '';
+}
+...</pre></li>
     </ul>
 
 
@@ -552,7 +661,24 @@
 
   return this._native_kerberos.authGSSClientWrap(context, challenge, user_name, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+Kerberos.prototype.authGSSClientWrap = function(context, challenge, user_name, callback) {
+  if(typeof user_name == 'function') {
+    callback = user_name;
+    user_name = '';
+  }
+
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSClientWrap</span>(context, challenge, user_name, callback
+);
+}
+
+// free memory used by a context created using authGSSClientInit.
+// callback takes one argument, an error string if defined.
+Kerberos.prototype.authGSSClientClean = function(context, callback) {
+  return this._native_kerberos.authGSSClientClean(context, callback);
+}
+...</pre></li>
     </ul>
 
 
@@ -567,7 +693,23 @@
     <li>description and source-code<pre class="apidocCodePre">authGSSServerClean = function (context, callback) {
   return this._native_kerberos.authGSSServerClean(context, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+  constrained_delegation = !!constrained_delegation;
+
+  return this._native_kerberos.authGSSServerInit(service, constrained_delegation, username, callback);
+};
+
+//callback takes one argument, an error string if defined.
+Kerberos.prototype.authGSSServerClean = function(context, callback) {
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSServerClean</span>(context, callback);
+};
+
+// authData should be the base64 encoded authentication data obtained
+// from client, e.g., in the Authorization header (without the leading
+// "Negotiate " string) during SPNEGO authentication.  The authenticated user
+// is available in context.username after successful authentication.
+// callback takes one argument, an error string if defined.
+...</pre></li>
     </ul>
 
 
@@ -599,7 +741,23 @@
 
   return this._native_kerberos.authGSSServerInit(service, constrained_delegation, username, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+  if (typeof(username) === 'function') {
+	  callback = username;
+	  username = null;
+  }
+
+  constrained_delegation = !!constrained_delegation;
+
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSServerInit</span>(service, constrained_delegation, username
+, callback);
+};
+
+//callback takes one argument, an error string if defined.
+Kerberos.prototype.authGSSServerClean = function(context, callback) {
+  return this._native_kerberos.authGSSServerClean(context, callback);
+};
+...</pre></li>
     </ul>
 
 
@@ -614,7 +772,23 @@
     <li>description and source-code<pre class="apidocCodePre">authGSSServerStep = function (context, authData, callback) {
   return this._native_kerberos.authGSSServerStep(context, authData, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// is available in context.username after successful authentication.
+// callback takes one argument, an error string if defined.
+//
+// Note: when S4U2Self protocol transition was requested in the authGSSServerInit
+// no actual authentication will be performed and authData will be ignored.
+//
+Kerberos.prototype.authGSSServerStep = function(context, authData, callback) {
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">authGSSServerStep</span>(context, authData, callback);
+};
+
+// authenticate the username and password against the KDC, and verify the KDC using a local
+// service key stored in the keytab.  See above for details on providing the keytab.
+// The service should be the service principal name for a key available in the local keytab,
+// e.g. HTTP/somehost.example.com.  If service is an empty tring, KDC verification will
+// be skipped.  DON'T DO THIS - it's a possible security vulnerability if an attacker
+...</pre></li>
     </ul>
 
 
@@ -629,7 +803,24 @@
     <li>description and source-code<pre class="apidocCodePre">authUserKrb5Password = function (username, password, service, callback) {
     return this._native_kerberos.authUserKrb5Password(username, password, service, callback);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+// service key stored in the keytab.  See above for details on providing the keytab.
+// The service should be the service principal name for a key available in the local keytab,
+// e.g. HTTP/somehost.example.com.  If service is an empty tring, KDC verification will
+// be skipped.  DON'T DO THIS - it's a possible security vulnerability if an attacker
+// can spoof your KDC  (see: https://github.com/qesuto/node-krb5/issues/13)
+// callback receives error and boolean
+Kerberos.prototype.authUserKrb5Password = function(username, password, service, callback) {
+    return this._native_kerberos.<span class="apidocCodeKeywordSpan">authUserKrb5Password</span>(username, password, service, callback
+);
+};
+
+Kerberos.prototype.acquireAlternateCredentials = function(user_name, password, domain) {
+  return this._native_kerberos.acquireAlternateCredentials(user_name, password, domain);
+}
+
+Kerberos.prototype.prepareOutboundPackage = function(principal, inputdata) {
+...</pre></li>
     </ul>
 
 
@@ -644,7 +835,23 @@
     <li>description and source-code<pre class="apidocCodePre">decryptMessage = function (challenge) {
   return this._native_kerberos.decryptMessage(challenge);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+}
+
+Kerberos.prototype.prepareOutboundPackage = function(principal, inputdata) {
+  return this._native_kerberos.prepareOutboundPackage(principal, inputdata);
+}
+
+Kerberos.prototype.decryptMessage = function(challenge) {
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">decryptMessage</span>(challenge);
+}
+
+Kerberos.prototype.encryptMessage = function(challenge) {
+  return this._native_kerberos.encryptMessage(challenge);
+}
+
+Kerberos.prototype.queryContextAttribute = function(attribute) {
+...</pre></li>
     </ul>
 
 
@@ -659,7 +866,22 @@
     <li>description and source-code<pre class="apidocCodePre">encryptMessage = function (challenge) {
   return this._native_kerberos.encryptMessage(challenge);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+}
+
+Kerberos.prototype.decryptMessage = function(challenge) {
+  return this._native_kerberos.decryptMessage(challenge);
+}
+
+Kerberos.prototype.encryptMessage = function(challenge) {
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">encryptMessage</span>(challenge);
+}
+
+Kerberos.prototype.queryContextAttribute = function(attribute) {
+  if(typeof attribute != 'number' &amp;&amp; attribute != 0x00) throw new Error("Attribute not supported");
+  return this._native_kerberos.queryContextAttribute(attribute);
+}
+...</pre></li>
     </ul>
 
 
@@ -674,7 +896,23 @@
     <li>description and source-code<pre class="apidocCodePre">prepareOutboundPackage = function (principal, inputdata) {
   return this._native_kerberos.prepareOutboundPackage(principal, inputdata);
 }</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+};
+
+Kerberos.prototype.acquireAlternateCredentials = function(user_name, password, domain) {
+  return this._native_kerberos.acquireAlternateCredentials(user_name, password, domain);
+}
+
+Kerberos.prototype.prepareOutboundPackage = function(principal, inputdata) {
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">prepareOutboundPackage</span>(principal, inputdata);
+}
+
+Kerberos.prototype.decryptMessage = function(challenge) {
+  return this._native_kerberos.decryptMessage(challenge);
+}
+
+Kerberos.prototype.encryptMessage = function(challenge) {
+...</pre></li>
     </ul>
 
 
@@ -690,8 +928,46 @@
   if(typeof attribute != 'number' &amp;&amp; attribute != 0x00) throw new Error("Attribute not supported");
   return this._native_kerberos.queryContextAttribute(attribute);
 }</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+Kerberos.prototype.encryptMessage = function(challenge) {
+  return this._native_kerberos.encryptMessage(challenge);
+}
+
+Kerberos.prototype.queryContextAttribute = function(attribute) {
+  if(typeof attribute != 'number' &amp;&amp; attribute != 0x00) throw new Error("Attribute not supported");
+  return this._native_kerberos.<span class="apidocCodeKeywordSpan">queryContextAttribute</span>(attribute);
+}
+
+// Some useful result codes
+Kerberos.AUTH_GSS_CONTINUE     = 0;
+Kerberos.AUTH_GSS_COMPLETE     = 1;
+
+// Some useful gss flags
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.kerberos.kerberos" id="apidoc.module.kerberos.kerberos">module kerberos.kerberos</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.kerberos.kerberos.Kerberos" id="apidoc.element.kerberos.kerberos.Kerberos">
+        function <span class="apidocSignatureSpan">kerberos.kerberos.</span>Kerberos
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">Kerberos = function () {
+  this._native_kerberos = new KerberosNative();
+}</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
+
+
 
 
 </div>
